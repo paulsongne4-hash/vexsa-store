@@ -250,7 +250,7 @@ export default function Home() {
       <header className="sticky top-0 z-40 border-b border-[#edf0f4]/90 bg-white/95 backdrop-blur-xl">
         <div className="container flex h-[76px] items-center gap-4">
           <a href="#top" className="flex shrink-0 items-center gap-2.5" aria-label="Vexsa Store, accueil">
-            <img src="/manus-storage/vexsa-store-logo_192d4382.png" alt="VEXSA-STORE" className="h-11 w-[118px] rounded-xl object-cover object-center shadow-[0_8px_20px_rgba(21,94,239,.18)]" />
+            <img src="/manus-storage/vexsa-store-logo-transparent_8c0914f8.png" alt="VEXSA-STORE" className="h-11 w-[118px] object-contain" />
           </a>
 
           <nav className="ml-6 hidden items-center gap-6 text-sm font-semibold text-[#667085] lg:flex" aria-label="Navigation principale">

@@ -30,6 +30,41 @@ export type CommunityAsset = {
   created_at: string;
 };
 
+export const ADMIN_EMAIL = "paulsongne4@gmail.com";
+
+export type AdminOverview = {
+  total_users: number;
+  active_users: number;
+  suspended_users: number;
+  total_apps: number;
+  published_apps: number;
+  removed_apps: number;
+  total_views: number;
+  total_downloads: number;
+};
+
+export type AdminApp = {
+  id: string;
+  name: string;
+  category: string;
+  status: "published" | "hidden" | "removed";
+  published_at: string | null;
+  views_count: number;
+  downloads_count: number;
+  owner_id: string;
+  owner_email: string;
+  owner_status: "active" | "suspended" | "banned";
+};
+
+export type AdminUser = {
+  id: string;
+  email: string;
+  display_name: string | null;
+  role: "user" | "admin";
+  account_status: "active" | "suspended" | "banned";
+  created_at: string;
+};
+
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
@@ -47,7 +82,7 @@ export const supabaseConfig = {
 
 export async function fetchPublicApps() {
   if (!supabase) return [] as CommunityApp[];
-  const { data, error } = await supabase.from("apps").select("*").not("published_at", "is", null).order("created_at", { ascending: false });
+  const { data, error } = await supabase.from("apps").select("*").eq("status", "published").not("published_at", "is", null).order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as CommunityApp[];
 }
@@ -62,6 +97,12 @@ export async function fetchAppAssets(appId: string) {
 export async function recordAppEvent(appId: string, eventType: "view" | "download") {
   if (!supabase) return;
   const { error } = await supabase.rpc("record_app_event", { target_app_id: appId, kind: eventType });
+  if (error) throw error;
+}
+
+export async function deleteOwnedApp(appId: string) {
+  if (!supabase) throw new Error("Supabase n’est pas configuré");
+  const { error } = await supabase.rpc("delete_app_and_assets", { target_app_id: appId });
   if (error) throw error;
 }
 
