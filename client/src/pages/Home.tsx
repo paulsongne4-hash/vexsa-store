@@ -28,7 +28,7 @@ import { AppCard, type StoreApp } from "@/components/AppCard";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { DownloadButton } from "@/components/DownloadButton";
 import { PromoBanner } from "@/components/PromoBanner";
-import { fetchAppsFromSupabase, supabaseStatus } from "@/lib/supabase";
+import { trpc } from "@/lib/trpc";
 
 const categories = ["Toutes", "B2B", "Matériaux", "Outillage", "Services"];
 
@@ -159,7 +159,7 @@ const promoSlides = [
   },
 ];
 
-function remoteToApp(row: { id?: string | number; name: string; description?: string; category?: string; badge?: string; action?: string; icon?: string; accent?: string; rating?: string; downloads?: string }): StoreApp {
+function remoteToApp(row: { id?: string | number; name: string; description?: string | null; category?: string | null; badge?: string | null; action?: string | null; icon?: string | null; accent?: string | null; rating?: string | null; downloads?: string | null }): StoreApp {
   const Icon = row.icon === "boxes" ? Boxes : row.icon === "wrench" ? Wrench : row.icon === "chart" ? LineChart : row.icon === "shield" ? ShieldCheck : BriefcaseBusiness;
   return {
     ...demoApps[0],
@@ -184,19 +184,11 @@ export default function Home() {
   const [promoIndex, setPromoIndex] = useState(0);
   const [selectedApp, setSelectedApp] = useState<StoreApp | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const catalogQuery = trpc.catalog.list.useQuery();
 
   useEffect(() => {
-    fetchAppsFromSupabase()
-      .then((remoteApps) => {
-        if (remoteApps?.length) {
-          setApps(remoteApps.map(remoteToApp));
-          toast.success("Catalogue Supabase synchronisé");
-        }
-      })
-      .catch(() => {
-        // The local fixture is intentionally kept as a resilient preview fallback.
-      });
-  }, []);
+    if (catalogQuery.data?.length) setApps(catalogQuery.data.map(remoteToApp));
+  }, [catalogQuery.data]);
 
   const filteredApps = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -238,7 +230,7 @@ export default function Home() {
               <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Rechercher une application…" className="h-11 w-full rounded-full bg-[#f6f8fb] pl-10 pr-4 text-sm text-[#101828] outline-none ring-1 ring-transparent transition placeholder:text-[#98a2b3] focus:bg-white focus:ring-[#155eef]/35" />
             </label>
           </div>
-          <button type="button" onClick={() => toast.info("Portail administration", { description: "L’espace de gestion des apps sera disponible dans la prochaine version." })} className="hidden items-center gap-2 rounded-full border border-[#e4e7ec] px-4 py-2.5 text-sm font-semibold text-[#344054] transition hover:border-[#155eef]/30 hover:text-[#155eef] sm:flex"><Building2 className="size-4" /> Admin</button>
+          <a href="/admin" className="hidden items-center gap-2 rounded-full border border-[#e4e7ec] px-4 py-2.5 text-sm font-semibold text-[#344054] transition hover:border-[#155eef]/30 hover:text-[#155eef] sm:flex"><Building2 className="size-4" /> Admin</a>
           <button type="button" aria-label="Ouvrir le menu" onClick={() => setMenuOpen((value) => !value)} className="flex size-10 items-center justify-center rounded-full bg-[#f6f8fb] text-[#344054] md:hidden">{menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}</button>
         </div>
         {menuOpen && <div className="container border-t border-[#edf0f4] pb-4 pt-3 md:hidden"><div className="mb-3"><label className="relative block"><Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[#98a2b3]" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Rechercher une application…" className="h-11 w-full rounded-full bg-[#f6f8fb] pl-10 pr-4 text-sm outline-none ring-1 ring-transparent focus:bg-white focus:ring-[#155eef]/35" /></label></div><nav className="flex items-center gap-5 text-sm font-semibold text-[#667085]"><a href="#catalogue" onClick={() => setMenuOpen(false)}>Catalogue</a><a href="#packs" onClick={() => setMenuOpen(false)}>Packs & promos</a><a href="#support" onClick={() => setMenuOpen(false)}>Support</a></nav></div>}
@@ -285,7 +277,7 @@ export default function Home() {
           </div>
         </section>
 
-        <footer className="border-t border-[#e8ebf0] bg-white"><div className="container flex flex-col gap-5 py-7 text-xs text-[#98a2b3] sm:flex-row sm:items-center sm:justify-between"><div className="flex items-center gap-2 font-display font-bold text-[#344054]"><span className="flex size-7 items-center justify-center rounded-lg bg-[#155eef] text-[#f7d51d]"><Zap className="size-3.5 fill-current" /></span> Vexsa Store</div><div className="flex flex-wrap items-center gap-4"><span>{supabaseStatus.label}</span><span className="size-1 rounded-full bg-[#d0d5dd]" /><span>© 2026 Vexsa ecosystem</span></div></div></footer>
+        <footer className="border-t border-[#e8ebf0] bg-white"><div className="container flex flex-col gap-5 py-7 text-xs text-[#98a2b3] sm:flex-row sm:items-center sm:justify-between"><div className="flex items-center gap-2 font-display font-bold text-[#344054]"><span className="flex size-7 items-center justify-center rounded-lg bg-[#155eef] text-[#f7d51d]"><Zap className="size-3.5 fill-current" /></span> Vexsa Store</div><div className="flex flex-wrap items-center gap-4"><span>{catalogQuery.data?.length ? "Catalogue live · base Vexsa" : "Mode démo · API prête"}</span><span className="size-1 rounded-full bg-[#d0d5dd]" /><span>© 2026 Vexsa ecosystem</span></div></div></footer>
       </main>
 
       {selectedApp && <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#0b1428]/45 p-0 backdrop-blur-sm sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label={`Détails de ${selectedApp.name}`} onMouseDown={(event) => { if (event.target === event.currentTarget) setSelectedApp(null); }}><div className="max-h-[92vh] w-full max-w-[560px] overflow-y-auto rounded-t-[28px] bg-white p-6 shadow-[0_28px_90px_rgba(11,20,40,.25)] sm:rounded-[28px] sm:p-8"><div className="flex items-start justify-between"><div className={`flex size-16 items-center justify-center rounded-[20px] text-white ${selectedApp.accent}`}>{selectedApp.icon}</div><button type="button" aria-label="Fermer" onClick={() => setSelectedApp(null)} className="flex size-9 items-center justify-center rounded-full bg-[#f6f8fb] text-[#667085] hover:text-[#0b1428]"><X className="size-4" /></button></div><p className="mt-7 text-[11px] font-bold uppercase tracking-[.18em] text-[#155eef]">{selectedApp.category} · {selectedApp.version}</p><h2 className="mt-2 font-display text-4xl font-bold tracking-[-.065em] text-[#0b1428]">{selectedApp.name}</h2><p className="mt-4 text-base leading-7 text-[#667085]">{selectedApp.description}</p><div className="mt-7 grid gap-3 sm:grid-cols-3">{selectedApp.features.map((feature) => <div key={feature} className="rounded-2xl bg-[#f7f8fa] p-3 text-xs font-semibold leading-5 text-[#475467]"><BadgeCheck className="mb-2 size-4 text-[#079455]" />{feature}</div>)}</div><div className="mt-8 flex flex-wrap items-center gap-3"><DownloadButton label={selectedApp.action === "Télécharger APK" ? "Télécharger APK" : "Ouvrir l'App"} onClick={() => toast.success(`${selectedApp.name} sélectionnée`, { description: "Le lien d’accès sera connecté à votre distribution Vexsa." })} /><a href="https://wa.me/33100000000?text=Bonjour%20Vexsa%2C%20je%20souhaite%20en%20savoir%20plus%20sur%20" target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full border border-[#e4e7ec] px-4 text-sm font-semibold text-[#344054] transition hover:border-[#155eef]/30 hover:text-[#155eef]"><MessageCircle className="size-4" /> Parler à l’équipe</a></div><div className="mt-7 flex items-center gap-2 border-t border-[#eaecf0] pt-5 text-xs text-[#98a2b3]"><Download className="size-4" /> {selectedApp.downloads} <span className="mx-1">·</span> <span>Version stable disponible</span></div></div></div>}
