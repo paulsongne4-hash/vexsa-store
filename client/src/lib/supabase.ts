@@ -100,10 +100,16 @@ export async function recordAppEvent(appId: string, eventType: "view" | "downloa
   if (error) throw error;
 }
 
-export async function deleteOwnedApp(appId: string) {
+export async function deleteOwnedApp(appId: string, ownerId: string) {
   if (!supabase) throw new Error("Supabase n’est pas configuré");
-  const { error } = await supabase.rpc("delete_app_and_assets", { target_app_id: appId });
-  if (error) throw error;
+  const { data: assets, error: assetsError } = await supabase.from("app_assets").select("storage_path").eq("app_id", appId).eq("owner_id", ownerId);
+  if (assetsError) throw assetsError;
+  const paths = (assets ?? []).map((asset) => asset.storage_path).filter(Boolean);
+  if (paths.length) await supabase.storage.from("app-assets").remove(paths);
+  const { error: assetsDeleteError } = await supabase.from("app_assets").delete().eq("app_id", appId).eq("owner_id", ownerId);
+  if (assetsDeleteError) throw assetsDeleteError;
+  const { error: appDeleteError } = await supabase.from("apps").delete().eq("id", appId).eq("owner_id", ownerId);
+  if (appDeleteError) throw appDeleteError;
 }
 
 export type SupabaseAuthState = {

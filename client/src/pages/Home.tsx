@@ -29,7 +29,7 @@ import { CategoryFilter } from "@/components/CategoryFilter";
 import { DownloadButton } from "@/components/DownloadButton";
 import { PromoBanner } from "@/components/PromoBanner";
 import { AuthDialog } from "@/components/AuthDialog";
-import { fetchPublicApps, recordAppEvent } from "@/lib/supabase";
+import { ADMIN_EMAIL, fetchPublicApps, recordAppEvent } from "@/lib/supabase";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -267,7 +267,7 @@ export default function Home() {
           </div>
           <div className="hidden items-center gap-2 sm:flex">
             <ThemeToggle compact />
-            {isAuthenticated ? <><a href="/dashboard" className="flex items-center gap-2 rounded-full border border-[#e4e7ec] px-3 py-2 text-sm font-semibold text-[#344054] transition hover:border-[#155eef]/30 hover:text-[#155eef]"><span className="flex size-6 items-center justify-center rounded-full bg-[#155eef] text-[10px] font-bold text-white">{displayName.slice(0, 1).toUpperCase()}</span>{displayName}</a><button type="button" onClick={() => void signOut()} className="rounded-full px-3 py-2 text-sm font-semibold text-[#667085] hover:bg-[#f7f8fa] hover:text-[#0b1428]">Sortir</button></> : <><button type="button" onClick={() => { setAuthMode("signin"); setAuthOpen(true); }} className="rounded-full px-3 py-2 text-sm font-semibold text-[#344054] hover:bg-[#f7f8fa]">Connexion</button><button type="button" onClick={() => { setAuthMode("signup"); setAuthOpen(true); }} className="rounded-full bg-[#155eef] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(21,94,239,.18)] hover:bg-[#0d4cc9]">Inscription</button></>}
+            {isAuthenticated ? <><a href="/dashboard" className="flex items-center gap-2 rounded-full border border-[#e4e7ec] px-3 py-2 text-sm font-semibold text-[#344054] transition hover:border-[#155eef]/30 hover:text-[#155eef]"><span className="flex size-6 items-center justify-center rounded-full bg-[#155eef] text-[10px] font-bold text-white">{displayName.slice(0, 1).toUpperCase()}</span>{displayName}</a>{user?.email?.toLowerCase() === ADMIN_EMAIL && <a href="/admin" className="rounded-full bg-[#0b1428] px-3 py-2 text-xs font-bold text-white hover:bg-[#182845]">Admin</a>}<button type="button" onClick={() => void signOut()} className="rounded-full px-3 py-2 text-sm font-semibold text-[#667085] hover:bg-[#f7f8fa] hover:text-[#0b1428]">Sortir</button></> : <><button type="button" onClick={() => { setAuthMode("signin"); setAuthOpen(true); }} className="rounded-full px-3 py-2 text-sm font-semibold text-[#344054] hover:bg-[#f7f8fa]">Connexion</button><button type="button" onClick={() => { setAuthMode("signup"); setAuthOpen(true); }} className="rounded-full bg-[#155eef] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(21,94,239,.18)] hover:bg-[#0d4cc9]">Inscription</button></>}
           </div>
           <span className="sm:hidden"><ThemeToggle compact /></span>
           <button type="button" aria-label="Ouvrir le menu" onClick={() => setMenuOpen((value) => !value)} className="flex size-10 items-center justify-center rounded-full bg-[#f6f8fb] text-[#344054] md:hidden">{menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}</button>

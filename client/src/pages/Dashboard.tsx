@@ -113,7 +113,7 @@ export default function Dashboard() {
     if (!appPendingDeletion) return;
     setDeletingApp(true);
     try {
-      await deleteOwnedApp(appPendingDeletion.id);
+      await deleteOwnedApp(appPendingDeletion.id, user?.id ?? "");
       toast.success("Application supprimée", { description: "Les fichiers associés ont également été supprimés." });
       setAppPendingDeletion(null);
       await loadDashboard();
