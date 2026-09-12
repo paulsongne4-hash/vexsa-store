@@ -13,6 +13,7 @@ import {
   LineChart,
   Menu,
   MessageCircle,
+  Moon,
   PackageSearch,
   PlayCircle,
   QrCode,
@@ -30,6 +31,7 @@ import { PromoBanner } from "@/components/PromoBanner";
 import { AuthDialog } from "@/components/AuthDialog";
 import { fetchPublicApps, recordAppEvent } from "@/lib/supabase";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const categories = ["Toutes", "B2B", "Matériaux", "Outillage", "Services"];
 
@@ -248,8 +250,7 @@ export default function Home() {
       <header className="sticky top-0 z-40 border-b border-[#edf0f4]/90 bg-white/95 backdrop-blur-xl">
         <div className="container flex h-[76px] items-center gap-4">
           <a href="#top" className="flex shrink-0 items-center gap-2.5" aria-label="Vexsa Store, accueil">
-            <span className="flex size-10 items-center justify-center rounded-[13px] bg-[#155eef] text-[#f7d51d] shadow-[0_8px_20px_rgba(21,94,239,.18)]"><Zap className="size-5 fill-current" strokeWidth={2.5} /></span>
-            <span className="font-display text-[17px] font-bold tracking-[-.05em] text-[#0b1428]">Vexsa <span className="font-normal text-[#667085]">Store</span></span>
+            <img src="/manus-storage/vexsa-store-logo_192d4382.png" alt="VEXSA-STORE" className="h-11 w-[118px] rounded-xl object-cover object-center shadow-[0_8px_20px_rgba(21,94,239,.18)]" />
           </a>
 
           <nav className="ml-6 hidden items-center gap-6 text-sm font-semibold text-[#667085] lg:flex" aria-label="Navigation principale">
@@ -265,8 +266,10 @@ export default function Home() {
             </label>
           </div>
           <div className="hidden items-center gap-2 sm:flex">
+            <ThemeToggle compact />
             {isAuthenticated ? <><a href="/dashboard" className="flex items-center gap-2 rounded-full border border-[#e4e7ec] px-3 py-2 text-sm font-semibold text-[#344054] transition hover:border-[#155eef]/30 hover:text-[#155eef]"><span className="flex size-6 items-center justify-center rounded-full bg-[#155eef] text-[10px] font-bold text-white">{displayName.slice(0, 1).toUpperCase()}</span>{displayName}</a><button type="button" onClick={() => void signOut()} className="rounded-full px-3 py-2 text-sm font-semibold text-[#667085] hover:bg-[#f7f8fa] hover:text-[#0b1428]">Sortir</button></> : <><button type="button" onClick={() => { setAuthMode("signin"); setAuthOpen(true); }} className="rounded-full px-3 py-2 text-sm font-semibold text-[#344054] hover:bg-[#f7f8fa]">Connexion</button><button type="button" onClick={() => { setAuthMode("signup"); setAuthOpen(true); }} className="rounded-full bg-[#155eef] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(21,94,239,.18)] hover:bg-[#0d4cc9]">Inscription</button></>}
           </div>
+          <span className="sm:hidden"><ThemeToggle compact /></span>
           <button type="button" aria-label="Ouvrir le menu" onClick={() => setMenuOpen((value) => !value)} className="flex size-10 items-center justify-center rounded-full bg-[#f6f8fb] text-[#344054] md:hidden">{menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}</button>
         </div>
         {menuOpen && <div className="container border-t border-[#edf0f4] pb-4 pt-3 md:hidden"><div className="mb-3"><label className="relative block"><Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[#98a2b3]" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Rechercher une application…" className="h-11 w-full rounded-full bg-[#f6f8fb] pl-10 pr-4 text-sm outline-none ring-1 ring-transparent focus:bg-white focus:ring-[#155eef]/35" /></label></div><nav className="flex items-center gap-5 text-sm font-semibold text-[#667085]"><a href="#catalogue" onClick={() => setMenuOpen(false)}>Catalogue</a><a href="#packs" onClick={() => setMenuOpen(false)}>Packs & promos</a><a href="#support" onClick={() => setMenuOpen(false)}>Support</a></nav><div className="mt-4 flex gap-2">{isAuthenticated ? <a href="/dashboard" className="rounded-full border border-[#e4e7ec] px-3 py-2 text-sm font-semibold text-[#344054]">Mon dashboard</a> : <><button type="button" onClick={() => { setAuthMode("signin"); setAuthOpen(true); setMenuOpen(false); }} className="rounded-full border border-[#e4e7ec] px-3 py-2 text-sm font-semibold text-[#344054]">Connexion</button><button type="button" onClick={() => { setAuthMode("signup"); setAuthOpen(true); setMenuOpen(false); }} className="rounded-full bg-[#155eef] px-3 py-2 text-sm font-semibold text-white">Inscription</button></>}</div></div>}
