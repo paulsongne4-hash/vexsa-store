@@ -18,6 +18,8 @@ export type StoreApp = {
   featured?: boolean;
   features: string[];
   version: string;
+  downloadUrl?: string | null;
+  source?: "demo" | "community";
 };
 
 const badgeStyles = {
