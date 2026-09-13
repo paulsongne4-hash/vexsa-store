@@ -164,7 +164,7 @@ const promoSlides = [
 
 function supportHref(contact?: string | null) {
   const value = contact?.trim();
-  if (!value) return "https://wa.me/33100000000?text=Bonjour%20Vexsa%2C%20je%20souhaite%20%C3%AAtre%20accompagn%C3%A9";
+  if (!value) return "https://wa.me/22871338887?text=Bonjour%20Vexsa%2C%20j%27aimerais%20%C3%AAtre%20accompagn%C3%A9";
   if (/^https?:\/\//i.test(value) || /^mailto:/i.test(value)) return value;
   if (value.includes("@")) return `mailto:${value}`;
   const digits = value.replace(/\D/g, "");
@@ -323,7 +323,7 @@ export default function Home() {
         <section className="container pb-16 sm:pb-20">
           <div className="grid gap-5 lg:grid-cols-[1.4fr_.6fr]">
             <div className="relative overflow-hidden rounded-[26px] bg-[#0b1428] p-7 text-white sm:p-9"><div className="absolute -right-10 -top-16 size-64 rounded-full bg-[#155eef]/40 blur-3xl" /><div className="relative max-w-xl"><div className="mb-5 flex size-11 items-center justify-center rounded-[15px] bg-[#f7d51d] text-[#0b1428]"><Boxes className="size-5" /></div><p className="text-[11px] font-bold uppercase tracking-[.18em] text-[#f7d51d]">Packs & promotions</p><h2 className="mt-3 font-display text-3xl font-bold leading-[1.05] tracking-[-.055em] sm:text-4xl">Construisez votre stack Vexsa.</h2><p className="mt-4 max-w-md text-sm leading-6 text-[#c7d2e7]">Des bundles conçus pour les événements, les équipes en croissance et les opérations qui ne peuvent pas ralentir.</p><button type="button" onClick={handlePrimaryAction} className="group mt-7 inline-flex items-center gap-2 text-sm font-bold text-white">Voir les packs <ChevronRight className="size-4 transition-transform group-hover:translate-x-1" /></button></div></div>
-            <div id="support" className="rounded-[26px] bg-[#f7d51d] p-7 text-[#0b1428] sm:p-9"><MessageCircle className="size-7" /><h3 className="mt-8 font-display text-2xl font-bold leading-tight tracking-[-.05em]">Besoin d’un accompagnement event ?</h3><p className="mt-3 text-sm leading-6 text-[#475467]">Notre équipe vous aide à choisir les bons outils pour votre activation.</p><a href="https://wa.me/33100000000?text=Bonjour%20Vexsa%2C%20j%27aimerais%20%C3%AAtre%20accompagn%C3%A9" target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#0b1428] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#182845]">Contacter sur WhatsApp <ExternalLink className="size-4" /></a></div>
+            <div id="support" className="rounded-[26px] bg-[#f7d51d] p-7 text-[#0b1428] sm:p-9"><MessageCircle className="size-7" /><h3 className="mt-8 font-display text-2xl font-bold leading-tight tracking-[-.05em]">Besoin d’un accompagnement event ?</h3><p className="mt-3 text-sm leading-6 text-[#475467]">Notre équipe vous aide à choisir les bons outils pour votre activation.</p><a href="https://wa.me/22871338887?text=Bonjour%20Vexsa%2C%20j%27aimerais%20%C3%AAtre%20accompagn%C3%A9" target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#0b1428] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#182845]">Contacter sur WhatsApp <ExternalLink className="size-4" /></a></div>
           </div>
         </section>
 
