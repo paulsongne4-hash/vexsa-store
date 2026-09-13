@@ -19,6 +19,7 @@ export type StoreApp = {
   features: string[];
   version: string;
   downloadUrl?: string | null;
+  supportContact?: string | null;
   source?: "demo" | "community";
 };
 

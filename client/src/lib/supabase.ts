@@ -11,6 +11,7 @@ export type CommunityApp = {
   icon_url: string | null;
   download_url: string | null;
   download_kind: "link" | "storage";
+  support_contact: string | null;
   published_at: string | null;
   created_at: string;
   views_count: number;
